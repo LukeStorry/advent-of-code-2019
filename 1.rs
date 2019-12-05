@@ -1,31 +1,30 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-
+use std::fs::read_to_string;
 
 fn get_input() -> Vec<i32> {
-    let file = File::open("input1.txt").unwrap();
-    BufReader::new(file).lines()
-        .map(|line| line.unwrap().parse::<i32>().unwrap())
+    read_to_string("input1.txt")
+        .unwrap()
+        .trim()
+        .split('\n')
+        .map(|int| int.parse().unwrap())
         .collect()
 }
 
-fn fuel1(mass: &i32) -> i32 { mass / 3 - 2 }
-
-fn fuel2(mass: &i32) -> i32 {
-    let fuel =  mass / 3 - 2;
-    if fuel <= 0 { 0 } else {
-        fuel + fuel2(&fuel)
-    }
+fn calc_fuel_part1(mass: &i32) -> i32 {
+    mass / 3 - 2
 }
 
+fn calc_fuel_part2(mass: &i32) -> i32 {
+    let fuel = mass / 3 - 2;
+    fuel + (if fuel <= 0 { 0 } else { calc_fuel_part2(&fuel) })
+}
 
 fn main() {
     let input = get_input();
 
-    let fuel_sum_1: i32 = input.iter().map(fuel1).sum();
-    let fuel_sum_2: i32 = input.iter().map(fuel2).sum();
+    let total_fuel_part1: i32 = input.iter().map(calc_fuel_part1).sum();
+    let total_fuel_part2: i32 = input.iter().map(calc_fuel_part2).sum();
 
-    print!("{}\n{}", fuel_sum_1, fuel_sum_2);
+    print!("{}\n{}", total_fuel_part1, total_fuel_part2);
 }
 
 
