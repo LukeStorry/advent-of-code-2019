@@ -8,4 +8,5 @@ fn main() {
     day2::part1();
     day2::part2();
     day5::part1();
+    day5::part2();
 }

@@ -9,7 +9,6 @@ fn get_puzzle_input() -> Vec<i32> {
         .collect()
 }
 
-#[derive(Debug)]
 enum Mode {
     Position,
     Immediate,
@@ -36,7 +35,6 @@ fn run_program(_memory: Vec<i32>, _input: &[i32]) -> Vec<i32> {
         let opcode = current_instruction % 100;
         let p1_mode = if ((current_instruction / 100) % 10) == 0 { Mode::Position } else { Mode::Immediate };
         let p2_mode = if ((current_instruction / 1000) % 10) == 0 { Mode::Position } else { Mode::Immediate };
-        let p3_mode = if ((current_instruction / 10000) % 10) == 0 { Mode::Position } else { Mode::Immediate };
 
         match opcode {
             1 => {
@@ -60,6 +58,36 @@ fn run_program(_memory: Vec<i32>, _input: &[i32]) -> Vec<i32> {
                 output.push(parameter1);
                 instruction_pointer += 2;
             }
+            5 => {
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                if parameter1 != 0 {
+                    instruction_pointer = parameter2 as usize;
+                } else {
+                    instruction_pointer += 3;
+                }
+            }
+            6 => {
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                if parameter1 == 0 {
+                    instruction_pointer = parameter2 as usize;
+                } else {
+                    instruction_pointer += 3;
+                }
+            }
+            7 => {
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                set(&mut memory, instruction_pointer + 3, (parameter1 < parameter2) as i32);
+                instruction_pointer += 4;
+            }
+            8 => {
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                set(&mut memory, instruction_pointer + 3, (parameter1 == parameter2) as i32);
+                instruction_pointer += 4;
+            }
             99 => {
                 break;
             }
@@ -71,8 +99,13 @@ fn run_program(_memory: Vec<i32>, _input: &[i32]) -> Vec<i32> {
 
 
 pub fn part1() {
-    let output = run_program(get_puzzle_input(), &[1]);
-    print!("Day 5, Part 1: {:?}\n", *output.last().unwrap());
+    let part1 = run_program(get_puzzle_input(), &[1]);
+    print!("Day 5, Part 1: {:?}\n", *part1.last().unwrap());
+}
+
+pub fn part2() {
+    let part2 = run_program(get_puzzle_input(), &[5]);
+    print!("Day 5, Part 2: {:?}\n", *part2.last().unwrap());
 }
 
 
