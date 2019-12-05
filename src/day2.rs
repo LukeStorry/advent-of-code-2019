@@ -42,10 +42,10 @@ fn run_program(input: Vec<usize>, noun: usize, verb: usize) -> usize {
     memory[0]
 }
 
-fn find_values(input: &Vec<usize>, wanted: usize) -> (usize, usize) {
+fn find_values(input: Vec<usize>, wanted: usize) -> (usize, usize) {
     for noun in 0..100 {
         for verb in 0..100 {
-            if wanted == run_program((*input).clone(), noun, verb) {
+            if wanted == run_program((input).clone(), noun, verb) {
                 return (noun, verb);
             }
         }
@@ -54,14 +54,12 @@ fn find_values(input: &Vec<usize>, wanted: usize) -> (usize, usize) {
 }
 
 pub fn part1() {
-    let input = get_input();
-    let output = run_program(input.clone(), 12, 2);
+    let output = run_program( get_input(), 12, 2);
     print!("Day 2, Part 1: {}\n", output);
 }
 
 pub fn part2() {
-    let input = get_input();
-    let (noun, verb) = find_values(&input, 19690720);
+    let (noun, verb) = find_values( get_input(), 19690720);
     print!("Day 2, Part 2: {}\n", 100 * noun + verb);
 }
 
