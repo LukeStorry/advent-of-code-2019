@@ -9,8 +9,21 @@ fn get_puzzle_input() -> Vec<i32> {
         .collect()
 }
 
-fn get(memory: &Vec<i32>, location: i32) -> i32{
-    *memory.get(location as usize).unwrap()
+#[derive(Debug)]
+enum Mode {
+    Position,
+    Immediate,
+}
+
+fn get(memory: &[i32], location: usize, mode: Mode) -> i32 {
+    match mode {
+        Mode::Position => memory[memory[location] as usize],
+        Mode::Immediate => memory[location],
+    }
+}
+
+fn set(memory: &mut [i32], location: usize, value: i32) {
+    memory[memory[location] as usize] = value;
 }
 
 fn run_program(_memory: Vec<i32>, _input: &[i32]) -> Vec<i32> {
@@ -19,35 +32,31 @@ fn run_program(_memory: Vec<i32>, _input: &[i32]) -> Vec<i32> {
     let mut output = Vec::new();
     let mut instruction_pointer = 0;
     loop {
-        let current_instruction = get(&memory, instruction_pointer);
+        let current_instruction = memory[instruction_pointer];
         let opcode = current_instruction % 100;
-        let p1_pos_mode: bool = ((current_instruction / 100) % 10) == 0;
-        let p2_pos_mode: bool = ((current_instruction / 1000) % 10) == 0;
+        let p1_mode = if ((current_instruction / 100) % 10) == 0 { Mode::Position } else { Mode::Immediate };
+        let p2_mode = if ((current_instruction / 1000) % 10) == 0 { Mode::Position } else { Mode::Immediate };
+        let p3_mode = if ((current_instruction / 10000) % 10) == 0 { Mode::Position } else { Mode::Immediate };
 
-        let (mut parameter1, mut parameter2, parameter3) = (
-            get(&memory, instruction_pointer + 1),
-            get(&memory, instruction_pointer + 2),
-            get(&memory, instruction_pointer + 3)
-        );
         match opcode {
             1 => {
-                parameter1 = if p1_pos_mode { get(&memory, parameter1) } else { parameter1 };
-                parameter2 = if p2_pos_mode { get(&memory, parameter2) } else { parameter2 };
-                memory[parameter3 as usize] = parameter2 + parameter1;
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                set(&mut memory, instruction_pointer + 3, parameter2 + parameter1);
                 instruction_pointer += 4;
             }
             2 => {
-                parameter1 = if p1_pos_mode { get(&memory, parameter1) } else { parameter1 };
-                parameter2 = if p2_pos_mode { get(&memory, parameter2) } else { parameter2 };
-                memory[parameter3 as usize] = parameter2 * parameter1;
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
+                let parameter2 = get(&memory, instruction_pointer + 2, p2_mode);
+                set(&mut memory, instruction_pointer + 3, parameter2 * parameter1);
                 instruction_pointer += 4;
             }
             3 => {
-                memory[parameter1 as usize] = *input_iter.next().unwrap();
+                set(&mut memory, instruction_pointer + 1, *input_iter.next().unwrap());
                 instruction_pointer += 2;
             }
             4 => {
-                parameter1 = if p1_pos_mode { get(&memory, parameter1) } else { parameter1 };
+                let parameter1 = get(&memory, instruction_pointer + 1, p1_mode);
                 output.push(parameter1);
                 instruction_pointer += 2;
             }
