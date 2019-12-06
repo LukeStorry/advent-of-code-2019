@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 
 
 fn get_input() -> Vec<usize> {
-    read_to_string("input/2.txt")
+    read_to_string("../input/2.txt")
         .unwrap()
         .trim()
         .split(',')

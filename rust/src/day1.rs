@@ -1,7 +1,7 @@
 use std::fs::read_to_string;
 
 fn get_input() -> Vec<i32> {
-    read_to_string("input/1.txt")
+    read_to_string("../input/1.txt")
         .unwrap()
         .trim()
         .split('\n')

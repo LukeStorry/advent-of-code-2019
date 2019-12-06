@@ -1,7 +1,7 @@
 use std::fs::read_to_string;
 
 fn get_puzzle_input() -> Vec<i32> {
-    read_to_string("input/5.txt")
+    read_to_string("../input/5.txt")
         .unwrap()
         .trim()
         .split(',')
