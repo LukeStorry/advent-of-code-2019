@@ -2,6 +2,7 @@ mod day1;
 mod day2;
 mod day5;
 mod day6;
+mod day9;
 
 use std::env;
 
@@ -40,6 +41,10 @@ fn main() {
         6 => {
             day6::part1();
             day6::part2();
+        }
+        9 => {
+            day9::part1();
+//            day6::part2();
         }
 
         _ => eprintln!("Nothing for this day"),
