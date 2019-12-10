@@ -111,7 +111,7 @@ def feedback(settings):
     amps = [IntCode(program).input(setting) for setting in settings]
     input = 0
     while input is not None:
-        for i, amp in enumerate(amps):
+        for amp in amps:
             output = amp.input(input).run()
             if output is None:
                 return input
