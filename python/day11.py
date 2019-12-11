@@ -116,10 +116,12 @@ turn = {
 }
 
 robot = IntCode([int(i) for i in open("input.txt").read().split(",")])
-hull = [[[0] for _ in range(100)] for _ in range(100)]
-coords = (50, 50)
+hull = [[[0] for _ in range(80)] for _ in range(80)]
+coords = (20, 20)
 direction = Direction.UP
 painted = set()
+
+hull[coords[1]][coords[0]] = [1]
 
 while True:
     current_panel = hull[coords[1]][coords[0]]
@@ -133,3 +135,8 @@ while True:
     coords = move[direction](*coords)
 
 print(len(painted))
+
+for row in hull[::-1]:
+    for panel in row:
+        print('#' if panel[0] == 1 else ' ', end='')
+    print()
