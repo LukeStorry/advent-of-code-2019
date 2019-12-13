@@ -1,10 +1,11 @@
-
 class IntCode:
-    def __init__(self, memory):
+    def __init__(self, memory, input_callback=None):
         self.memory = memory[:]
         self.inputs = []
+        self.input_callback = input_callback
         self.relative_base = 0
         self.instruction_pointer = 0
+        self.halted = False
 
     def input(self, i):
         self.inputs.append(i)
@@ -56,10 +57,11 @@ class IntCode:
                 self.instruction_pointer += 4
 
             elif opcode == 3:
+                next_input = self.inputs.pop(0) if self.inputs else self.input_callback()
+
                 self.write(
                     self.address(self.instruction_pointer + 1,
-                                 (current_operation // 100) % 10),
-                    self.inputs.pop(0))
+                                 (current_operation // 100) % 10), next_input)
                 self.instruction_pointer += 2
 
             elif opcode == 4:
@@ -91,5 +93,5 @@ class IntCode:
                 self.instruction_pointer += 2
 
             elif opcode == 99:
+                self.halted = True
                 return None
-
