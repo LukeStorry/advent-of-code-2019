@@ -26,6 +26,9 @@ class Xyz:
     def __str__(self) -> str:
         return f"<x={self.x}, y={self.y}, z={self.z}>"
 
+    def __eq__(self, other: Xyz) -> bool:
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
 
 class Moon:
     def __init__(self, info) -> None:
@@ -50,15 +53,18 @@ class Moon:
     def __repr__(self) -> str:
         return f"pos={self.position}, vel={self.velocity}"
 
+    def __eq__(self, other: Moon) -> bool:
+        return self.position == other.position and self.velocity == other.velocity
 
+
+initial_state = [Moon(moon) for moon in open('../input/12.txt').read().split('\n')]
 moons = [Moon(moon) for moon in open('../input/12.txt').read().split('\n')]
 
+minimum_loop = [0,0,0]
+
+# Part 1
 for i in range(1000):
-    for moon1, moon2 in combinations(moons, 2):
-        Moon.apply_gravity(moon1, moon2)
-
-    for moon in moons:
-        Moon.update_position(moon)
-
+    [moon1.apply_gravity(moon2) for moon1, moon2 in combinations(moons, 2)]
+    [moon.update_position() for moon in moons]
 
 print(sum(moon.total_energy for moon in moons))
