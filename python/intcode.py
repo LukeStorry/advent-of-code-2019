@@ -35,7 +35,6 @@ class IntCode:
         while True:
             current_operation = self.read(self.instruction_pointer)
             opcode = current_operation % 100
-
             if opcode in (1, 2, 4, 5, 6, 7, 8, 9):
                 p1 = self.read(
                     self.address(self.instruction_pointer + 1,
